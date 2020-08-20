@@ -1,0 +1,26 @@
+# Project Files #
+#################
+*.userprefs
+*.pidb
+*swp
+obj
+WebGoat/App_Data/*.txt
+WebGoat/Configuration/*.config
+
+# Trash Files #
+###############
+.DS_Store
+Backup/
+.vs/
+*.user
+*.log
+WebGoat/webgoatfirsttest - Web Deploy.pubxml
+WebGoat/bin/
+contrast_security.yaml
+.terraform.tfstate.lock.info
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+node_modules
+package-lock.json
+terraform.tfvars
