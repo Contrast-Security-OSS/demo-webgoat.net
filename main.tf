@@ -70,13 +70,8 @@ resource "azurerm_app_service" "app" {
   }
 
   provisioner "local-exec" {
-    command     = "./deploy.sh"
+    command     = "az webapp deployment source config-zip --resource-group ${azurerm_resource_group.personal.name} --name ${azurerm_app_service.app.name} --src ./WebGoat/DeployToAzure/deploy.zip"
     working_dir = path.module
-
-    environment = {
-      webappname        = "${replace(var.appname, "/[^-0-9a-zA-Z]/", "-")}-${var.initials}-app-service"
-      resourcegroupname = azurerm_resource_group.personal.name
-    }
   }
 }
 
