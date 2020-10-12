@@ -17,7 +17,7 @@ data "azurerm_container_registry" "salesengineering" {
 
 #Set up a personal resource group for the SE local to them
 resource "azurerm_resource_group" "personal" {
-  name     = "sales-engineering-${var.initials}"
+  name     = "Sales-Engineer-${var.initials}"
   location = var.location
 }
 
