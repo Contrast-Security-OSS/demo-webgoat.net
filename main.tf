@@ -9,12 +9,6 @@ data "external" "yaml" {
   program = [var.python_binary, "${path.module}/parseyaml.py"]
 }
 
-#Connect to our ACR so we can get the creds
-data "azurerm_container_registry" "salesengineering" {
-  name                = "SalesEngineering"
-  resource_group_name = "sales-engineering"
-}
-
 #Set up a personal resource group for the SE local to them
 resource "azurerm_resource_group" "personal" {
   name     = "Sales-Engineer-${var.initials}"
