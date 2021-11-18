@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer');
       console.log('Please specify a base url. E.g. `BASEURL=http://example.org node exercise.js`');
   } else {
     var browser;
-    if (process.env.DEBUG == true) {
+    if (process.env.DEBUG == "true") {
       browser = await puppeteer.launch({
           headless: false,
           executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
@@ -62,8 +62,9 @@ const puppeteer = require('puppeteer');
     //Leave a comment
 
     console.log(process.env.BASEURL + '/WebGoatCoins/ProductDetails.aspx')
-    await page.goto(process.env.BASEURL + '/WebGoatCoins/ProductDetails.aspx?productNumber=S18_2795', pageOptions)
 
+    await page.goto(process.env.BASEURL + '/WebGoatCoins/ProductDetails.aspx?productNumber=S18_2795', pageOptions)
+    await page.screenshot({path: 'productdetails.png'});
     await page.waitForSelector('#ctl00_BodyContentPlaceholder_txtEmail', selectorOptions)
     await page.type('#ctl00_BodyContentPlaceholder_txtEmail', 'david@contrast.com')
 
@@ -76,32 +77,30 @@ const puppeteer = require('puppeteer');
     await navigationPromise
 
     // Commenting out a couple of sections so that there are fewer vulns reported in the QA section of the Webgoat.NET demo than the DEV section
-
     //SQLi 1
 
-    //console.log(process.env.BASEURL + '/Content/SQLInjectionDiscovery.aspx')
-    //await page.goto(process.env.BASEURL + '/Content/SQLInjectionDiscovery.aspx', pageOptions)
+    console.log(process.env.BASEURL + '/Content/SQLInjectionDiscovery.aspx')
+    await page.goto(process.env.BASEURL + '/Content/SQLInjectionDiscovery.aspx', pageOptions)
 
-    //await page.waitForSelector('#ctl00_BodyContentPlaceholder_txtID', selectorOptions)
-    //await page.type('#ctl00_BodyContentPlaceholder_txtID', '101')
+    await page.waitForSelector('#ctl00_BodyContentPlaceholder_txtID', selectorOptions)
+    await page.type('#ctl00_BodyContentPlaceholder_txtID', '101')
 
-    //await page.waitForSelector('#ctl00_BodyContentPlaceholder_btnFind', selectorOptions)
-    //await page.click('#ctl00_BodyContentPlaceholder_btnFind')
+    await page.waitForSelector('#ctl00_BodyContentPlaceholder_btnFind', selectorOptions)
+    await page.click('#ctl00_BodyContentPlaceholder_btnFind')
 
-    //await navigationPromise
+    await navigationPromise
 
     //SQLi 2 Attack
+    console.log(process.env.BASEURL + '/Content/SQLInjection.aspx')
+    await page.goto(process.env.BASEURL + '/Content/SQLInjection.aspx', pageOptions)
 
-    //console.log(process.env.BASEURL + '/Content/SQLInjection.aspx')
-    //await page.goto(process.env.BASEURL + '/Content/SQLInjection.aspx', pageOptions)
+    await page.waitForSelector('#ctl00_BodyContentPlaceholder_txtName', selectorOptions)
+    await page.type('#ctl00_BodyContentPlaceholder_txtName', "D' OR '1%'='1")
 
-    //await page.waitForSelector('#ctl00_BodyContentPlaceholder_txtName', selectorOptions)
-    //await page.type('#ctl00_BodyContentPlaceholder_txtName', "D' OR '1%'='1")
+    await page.waitForSelector('#ctl00_BodyContentPlaceholder_btnAdd', selectorOptions)
+    await page.click('#ctl00_BodyContentPlaceholder_btnAdd')
 
-    //await page.waitForSelector('#ctl00_BodyContentPlaceholder_btnAdd', selectorOptions)
-    //await page.click('#ctl00_BodyContentPlaceholder_btnAdd')
-
-    //await navigationPromise
+    await navigationPromise
 
     //Download File Path Manipulation
 
