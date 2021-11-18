@@ -94,7 +94,7 @@ pipeline {
                 }
             }
         }
-        stage('sleeping') {
+        stage('sleeping - dev') {
             steps {
                 sleep 120
             }
