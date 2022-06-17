@@ -42,7 +42,11 @@ pipeline {
                             export ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID
                             export ARM_TENANT_ID=$AZURE_TENANT_ID
                             az login --service-principal --username $AZURE_CLIENT_ID --password $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
-                            terraform apply -auto-approve -var 'location=$location' -var 'initials=$initials' -var 'environment=qa' -var 'servername=jenkins'
+                            terraform apply -auto-approve -var 'location=$location' \
+                                -var 'initials=$initials' \
+                                -var 'environment=qa' \
+                                -var 'servername=jenkins' \
+                                -var 'session_metadata=branchName=qa,committer=Denzil,buildNumber=${env.BUILD_NUMBER}'
                             """
                         } catch (Exception e) {
                             echo "Terraform refresh failed, deleting state"
@@ -82,7 +86,11 @@ pipeline {
                             export ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID
                             export ARM_TENANT_ID=$AZURE_TENANT_ID
                             az login --service-principal --username $AZURE_CLIENT_ID --password $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
-                            terraform apply -auto-approve -var 'location=$location' -var 'initials=$initials' -var 'environment=development' -var 'servername=Macbook-Pro'
+                            terraform apply -auto-approve -var 'location=$location' \
+                                -var 'initials=$initials' \
+                                -var 'environment=development' \
+                                -var 'servername=Macbook-Pro' \
+                                -var 'session_metadata=branchName=feat: add new database option,committer=Nilesh,buildNumber=${env.BUILD_NUMBER}'     
                             """
                         } catch (Exception e) {
                             echo "Terraform refresh failed, deleting state"
@@ -122,7 +130,10 @@ pipeline {
                             export ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID
                             export ARM_TENANT_ID=$AZURE_TENANT_ID
                             az login --service-principal --username $AZURE_CLIENT_ID --password $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
-                            terraform apply -auto-approve -var 'location=$location' -var 'initials=$initials' -var 'environment=production' -var 'servername=Prod-01'
+                            terraform apply -auto-approve -var 'location=$location' \
+                                -var 'initials=$initials' \
+                                -var 'environment=production' \
+                                -var 'servername=Prod-01'
                             """
                         } catch (Exception e) {
                             echo "Terraform refresh failed, deleting state"
