@@ -16,33 +16,30 @@ resource "azurerm_resource_group" "personal" {
 }
 
 #Set up an app service plan
-resource "azurerm_app_service_plan" "app" {
+resource "azurerm_service_plan" "app" {
   name                = "webgoat-net-${var.initials}-app-service-plan"
   location            = azurerm_resource_group.personal.location
   resource_group_name = azurerm_resource_group.personal.name
-
-  sku {
-    tier = "Standard"
-    size = "S1"
-  }
+  sku_name            = "S1"
+  os_type             = "Windows"
 }
 
 #Set up an app service
-resource "azurerm_app_service" "app" {
+resource "azurerm_windows_web_app" "app" {
   name                = "webgoat-net-${var.initials}-app-service"
   location            = azurerm_resource_group.personal.location
   resource_group_name = azurerm_resource_group.personal.name
-  app_service_plan_id = azurerm_app_service_plan.app.id
+  service_plan_id     = azurerm_service_plan.app.id
+  zip_deploy_file     = "./WebGoat/DeployToAzure/deploy.zip"
 
   site_config {
-    dotnet_framework_version = "v4.0"
-    always_on                = true
-    local_mysql_enabled      = true
-    default_documents        = ["Default.aspx"]
+    always_on           = true
+    local_mysql_enabled = true
+    default_documents   = ["Default.aspx"]
   }
 
   app_settings = {
-    "ASPNETCORE_ENVIRONMENT"                    = "Development"
+    "ASPNETCORE_ENVIRONMENT"                  = "Development"
     "COR_ENABLE_PROFILING"                    = "1"
     "COR_PROFILER"                            = "{EFEB8EE0-6D39-4347-A5FE-4D0C88BC5BC1}"
     "COR_PROFILER_PATH_32"                    = "D:\\home\\SiteExtensions\\Contrast.NET.Azure.SiteExtension\\ContrastAppService\\ContrastProfiler-32.dll"
@@ -60,59 +57,45 @@ resource "azurerm_app_service" "app" {
     "CONTRAST__APPLICATION__TAGS"             = var.apptags
     "CONTRAST__AGENT__LOGGER__LEVEL"          = var.loglevel
     "CONTRAST__AGENT__LOGGER__ROLL_DAILY"     = "true"
-    "CONTRAST__AGENT__LOGGER__BACKUPS"         = "30"
-  }
-
-  provisioner "local-exec" {
-    command     = "az webapp deployment source config-zip --resource-group ${azurerm_resource_group.personal.name} --name ${azurerm_app_service.app.name} --src ./WebGoat/DeployToAzure/deploy.zip"
-    working_dir = path.module
+    "CONTRAST__AGENT__LOGGER__BACKUPS"        = "30"
   }
 }
 
-resource "null_resource" "before" {
-  depends_on = [azurerm_app_service.app]
-}
+# resource "null_resource" "before" {
+#   depends_on = [azurerm_windows_web_app.app]
+# }
 
-resource "null_resource" "delay" {
-  provisioner "local-exec" {
-    command = "sleep 20"
-  }
-  triggers = {
-    "before" = "${null_resource.before.id}"
-  }
-}
+# resource "null_resource" "delay" {
+#   provisioner "local-exec" {
+#     command = "sleep 20"
+#   }
+#   triggers = {
+#     "before" = null_resource.before.id
+#   }
+# }
 
-resource "null_resource" "after" {
-  depends_on = [null_resource.delay]
-}
+# resource "null_resource" "after" {
+#   depends_on = [null_resource.delay]
+# }
 
-resource "azurerm_template_deployment" "extension" {
+resource "azurerm_resource_group_template_deployment" "extension" {
   name                = "extension"
-  resource_group_name = azurerm_app_service.app.resource_group_name
-  template_body       = file("${path.module}/siteextensions.json")
+  resource_group_name = azurerm_windows_web_app.app.resource_group_name
+  template_content    = file("${path.module}/siteextensions.json")
 
-  parameters = {
-    "siteName"          = azurerm_app_service.app.name
-    "extensionName"     = "Contrast.NET.Azure.SiteExtension"   
+  parameters_content = jsonencode({
+    "siteName"      = {
+      value = azurerm_windows_web_app.app.name
+    },
+    "extensionName" = {
+      value = "Contrast.NET.Azure.SiteExtension"
+    }
+  })
 
-  }
-
-  deployment_mode     = "Incremental"
-  #wait until the app service starts before installing the extension
-  depends_on = [null_resource.delay]
+  deployment_mode = "Incremental"
 
   #restart the app service after installing the extension
   provisioner "local-exec" {
-    command     = "az webapp restart --name ${azurerm_app_service.app.name} --resource-group ${azurerm_app_service.app.resource_group_name}"      
-  }
-
-}
-
-resource "null_resource" "restart" {
-  provisioner "local-exec" {
-    command     = "az webapp restart --name ${azurerm_app_service.app.name} --resource-group ${azurerm_app_service.app.resource_group_name}"      
-  }
-  triggers = {
-    "before" = "${azurerm_template_deployment.extension.id}"
+    command = "az webapp restart --name ${azurerm_windows_web_app.app.name} --resource-group ${azurerm_windows_web_app.app.resource_group_name}"
   }
 }
