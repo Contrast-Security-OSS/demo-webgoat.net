@@ -2,7 +2,6 @@ pipeline {
     agent any
     tools {
         terraform 'terraform'
-        nodejs 'node-lts'
     }
 
     stages {
@@ -16,7 +15,7 @@ pipeline {
                 }
                 sh '''
                 terraform init -upgrade
-                npm init playwright@latest -- --quiet --browser=chromium
+                npm link @playwright/test
                 '''
             }
         }
@@ -30,7 +29,6 @@ pipeline {
                             export ARM_CLIENT_SECRET=$AZURE_CLIENT_SECRET
                             export ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID
                             export ARM_TENANT_ID=$AZURE_TENANT_ID
-                            az login --service-principal --username $AZURE_CLIENT_ID --password $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
                             terraform apply -auto-approve -var 'location=$location' \
                                 -var 'initials=$initials' \
                                 -var 'environment=qa' \
@@ -74,7 +72,6 @@ pipeline {
                             export ARM_CLIENT_SECRET=$AZURE_CLIENT_SECRET
                             export ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID
                             export ARM_TENANT_ID=$AZURE_TENANT_ID
-                            az login --service-principal --username $AZURE_CLIENT_ID --password $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
                             terraform apply -auto-approve -var 'location=$location' \
                                 -var 'initials=$initials' \
                                 -var 'environment=development' \
@@ -118,7 +115,6 @@ pipeline {
                             export ARM_CLIENT_SECRET=$AZURE_CLIENT_SECRET
                             export ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID
                             export ARM_TENANT_ID=$AZURE_TENANT_ID
-                            az login --service-principal --username $AZURE_CLIENT_ID --password $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
                             terraform apply -auto-approve -var 'location=$location' \
                                 -var 'initials=$initials' \
                                 -var 'environment=production' \

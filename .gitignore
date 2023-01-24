@@ -24,3 +24,6 @@ terraform.tfstate.backup
 node_modules
 package-lock.json
 terraform.tfvars
+.env
+tmp/
+playwright-report/
