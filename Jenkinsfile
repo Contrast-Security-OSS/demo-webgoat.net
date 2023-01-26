@@ -31,7 +31,7 @@ pipeline {
                             export ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID
                             export ARM_TENANT_ID=$AZURE_TENANT_ID
 
-                            //Login is requried to restart the web app
+                            #Login is requried to restart the web app
                             az login --service-principal \
                                 --username $AZURE_CLIENT_ID \
                                 --password $AZURE_CLIENT_SECRET \
@@ -81,7 +81,7 @@ pipeline {
                             export ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID
                             export ARM_TENANT_ID=$AZURE_TENANT_ID
 
-                            //Login is requried to restart the web app
+                            #Login is requried to restart the web app
                             az login --service-principal \
                                 --username $AZURE_CLIENT_ID \
                                 --password $AZURE_CLIENT_SECRET \
@@ -131,7 +131,7 @@ pipeline {
                             export ARM_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID
                             export ARM_TENANT_ID=$AZURE_TENANT_ID
 
-                            //Login is requried to restart the web app
+                            #Login is requried to restart the web app
                             az login --service-principal \
                                 --username $AZURE_CLIENT_ID \
                                 --password $AZURE_CLIENT_SECRET \
