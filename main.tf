@@ -13,6 +13,10 @@ data "external" "yaml" {
 resource "azurerm_resource_group" "personal" {
   name     = "Sales-Engineer-${var.initials}"
   location = var.location
+  tags = {
+    source = "jenkins-pipelines"
+    department = "sales engineering"
+  }
 }
 
 #Set up an app service plan
